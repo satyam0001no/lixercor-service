@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lixercor - UTR Payment Verification</title>
+  <style>
+    body { font-family: sans-serif; background: #f5f5f5; padding: 50px; text-align: center; }
+    .btn { padding: 10px 20px; background: #000; color: #fff; border: none; cursor: pointer; }
+    input { padding: 10px; width: 300px; margin-top: 10px; }
+    #download-section { margin-top: 20px; display: none; }
+  </style>
+</head>
+<body>
+  <h1>Lixercor Payment Verification</h1>
+  <p>Enter your UTR number below to verify your payment</p>
+  <input type="text" id="utr" placeholder="Enter UTR / Txn ID" />
+  <br><br>
+  <button class="btn" onclick="verifyUTR()">Verify Payment</button>
+  <p id="status"></p>
+
+  <div id="download-section">
+    <a href="/MILLIONAIRE_METHOD_EBOOK.pdf" download class="btn">📘 Download Now</a>
+  </div>
+
+  <script>
+    async function verifyUTR() {
+      const utr = document.getElementById('utr').value.trim();
+      const status = document.getElementById('status');
+      status.innerText = "Verifying...";
+
+      try {
+        const res = await fetch("/verify-utr", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ utr })
+        });
+        const data = await res.json();
+        if (data.success) {
+          status.innerText = "✅ Payment verified!";
+          document.getElementById('download-section').style.display = "block";
+        } else {
+          status.innerText = "❌ Payment not found or failed.";
+        }
+      } catch (err) {
+        status.innerText = "⚠️ Error connecting to server.";
+      }
+    }
+  </script>
+</body>
+</html>
